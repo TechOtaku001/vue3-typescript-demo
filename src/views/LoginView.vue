@@ -26,9 +26,7 @@
           @click="submitForm(ruleFormRef)"
           >登录</el-button
         >
-        <el-button class="login-btn" @click="resetForm(ruleFormRef)"
-          >重置</el-button
-        >
+        <el-button class="login-btn" @click="resetForm()">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -37,9 +35,13 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, toRefs } from "vue";
 import { LoginData } from "../types/login";
+import { FormInstance } from "element-plus";
+import { login } from '../request/api'
+import { useRouter } from 'vue-router'
 export default defineComponent({
   setup() {
-    const data = reactive(new LoginData);
+    const router = useRouter()
+    const data = reactive(new LoginData());
     const rules = {
       username: [
         {
@@ -68,12 +70,28 @@ export default defineComponent({
         },
       ],
     };
-    const ruleFormRef = ref(null);
+    const ruleFormRef = ref<FormInstance>();
     const resetForm = () => {
-      data.ruleForm.username = ''
-      data.ruleForm.password = ''
-    }
-    return { ...toRefs(data), ruleFormRef, rules, resetForm };
+      data.ruleForm.username = "";
+      data.ruleForm.password = "";
+    };
+    const submitForm = (formEl: FormInstance | undefined) => {
+      if (!formEl) return;
+      formEl.validate((valid) => {
+        if (valid) {
+          console.log("submit!");
+          router.push('/')
+          // login(data.ruleForm).then((res) => {
+          //   localStorage.setItem('token', res.data.token)
+          //   router.push('/')
+          // })
+        } else {
+          console.log("error submit!");
+          return false;
+        }
+      });
+    };
+    return { ...toRefs(data), ruleFormRef, rules, resetForm, submitForm };
   },
 });
 </script>

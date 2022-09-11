@@ -20,10 +20,15 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button class="login-btn" type="primary" @click="submitForm(ruleFormRef)"
+        <el-button
+          class="login-btn"
+          type="primary"
+          @click="submitForm(ruleFormRef)"
           >登录</el-button
         >
-        <el-button class="login-btn" @click="resetForm(ruleFormRef)">重置</el-button>
+        <el-button class="login-btn" @click="resetForm(ruleFormRef)"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
   </div>
@@ -31,45 +36,44 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref, toRefs } from "vue";
-
+import { LoginData } from "../types/login";
 export default defineComponent({
   setup() {
-    const data = reactive({
-      ruleForm: {
-        username: '',
-        password: ''
-      },
-      rules: {
-        username: [
-          {
-            required: true,
-            message: '请输入账号',
-            trigger: 'blur'
-          },
-          {
-            min: 3,
-            max: 10,
-            message: '账号的长度在3到10之间',
-            trigger: 'blur'
-          }
-        ],
-        password: [
-          {
-            required: true,
-            message: '请输入密码',
-            trigger: 'blur'
-          },
-          {
-            min: 3,
-            max: 10,
-            message: '密码的长度在3到10之间',
-            trigger: 'blur'
-          }
-        ]
-      }
-    })
-    const ruleFormRef = ref(null)
-    return {...toRefs(data), ruleFormRef};
+    const data = reactive(new LoginData);
+    const rules = {
+      username: [
+        {
+          required: true,
+          message: "请输入账号",
+          trigger: "blur",
+        },
+        {
+          min: 3,
+          max: 10,
+          message: "账号的长度在3到10之间",
+          trigger: "blur",
+        },
+      ],
+      password: [
+        {
+          required: true,
+          message: "请输入密码",
+          trigger: "blur",
+        },
+        {
+          min: 3,
+          max: 10,
+          message: "密码的长度在3到10之间",
+          trigger: "blur",
+        },
+      ],
+    };
+    const ruleFormRef = ref(null);
+    const resetForm = () => {
+      data.ruleForm.username = ''
+      data.ruleForm.password = ''
+    }
+    return { ...toRefs(data), ruleFormRef, rules, resetForm };
   },
 });
 </script>
